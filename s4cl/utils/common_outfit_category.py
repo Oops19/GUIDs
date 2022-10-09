@@ -50,6 +50,6 @@ class OutfitChangeReason(CommonEnum):
 class OutfitIndex(CommonEnum):
     ONE = 0
     TWO = 1
-    THRHEE = 2
+    THREE = 2
     FOUR = 3
     FIVE = 4

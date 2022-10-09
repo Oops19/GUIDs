@@ -123,6 +123,12 @@ class DumpGUIDs:
         lookup_metadata: bool = config.get('lookup_metadata', False)
         lookup_lods: bool = config.get('lookup_lods', False)
 
+        try:
+            # noinspection PyUnresolvedReferences
+            from guids.readers.cas_parts.cas_part_stream_reader import SCCASPartStreamReader
+        except:
+            lookup_metadata = False
+
         if new_packages and (process_on_startup or DumpGUIDs._enabled):
             log.debug(f"Processing '{scan_folder.capitalize()}' ...")
             self.dump_package_contents(
@@ -142,7 +148,7 @@ class DumpGUIDs:
             os.makedirs(ts4f.data_folder, exist_ok=True)
 
             config = self.get_configuration(ts4f)
-            config.update({'lookup_data': False})  # TODO Save in chunks with 10000 items to avoid huge dicts which can no longer be parsed
+            config.update({'lookup_metadata': False})  # TODO Save in chunks with 10000 items to avoid huge dicts which can no longer be parsed
             config.update({'lookup_lods': False})  # TODO FIX 'ByteIndexList' object has no attribute 'parent_tgi_block_list'
 
             scan_on_startup: bool = config.get('scan_on_startup', False)
@@ -394,11 +400,13 @@ class DumpGUIDs:
         log.debug(f"cached_packages: {len(cached_packages)}")
         total_files = len(new_packages)
 
+        '''
+        REMOVE big_cached_data
         big_cached_data = {}
         if lookup_metadata or lookup_lods:
             pass
             # TODO load data into 'big_cached_data'
-
+        '''
         read_files = 0
         dbpf_parser = DBPFParser()
         _time = time.time()
@@ -417,8 +425,11 @@ class DumpGUIDs:
 
                     id_name_dict, failures = dbpf_parser.read_package_items(file_name, ResourceTypes.CAS_PART, lookup_names=lookup_names, lookup_metadata=lookup_metadata, lookup_lods=lookup_lods)
                     if id_name_dict:
+                        cached_data.update({b64_file_name: id_name_dict})
+                        '''
+                        REMOVE big_cached_data
                         if lookup_metadata or lookup_lods:
-                            for part_id, data in id_name_dict:   # Dict[part_id, Dict[str, Any]
+                            for part_id, data in id_name_dict.items():   # Dict[part_id, Dict[str, Any]
                                 dlc_name = data.get('dlc')
                                 dlc_data = big_cached_data.get(dlc_name, {})
                                 if (part_id not in dlc_data.keys()) or ('Delta' in file_name) or ('delta' in file_name):
@@ -427,6 +438,7 @@ class DumpGUIDs:
                                     big_cached_data.update({dlc_name: dlc_data})  # Dict[DLC, Dict[part_id, Dict[str, Any]]]
                         else:
                             cached_data.update({b64_file_name: id_name_dict})
+                        '''
 
                     # Add entry to the cached files
                     cached_packages.update({b64_file_name: data})
@@ -442,13 +454,9 @@ class DumpGUIDs:
         except Exception as ex:
             log.warn(f"Oops: {ex}")
 
-        if lookup_metadata or lookup_lods:
-            pass
-            # TODO save 'big_cached_data' properly
-        else:
-            log.debug("Writing to cache ...")
-            log.debug(f"cached_data: {len(cached_data)}")
-            log.debug(f"cached_packages: {len(cached_packages)}")
-            # Write to disk
-            GUIDStore().update(t, cached_data, cached_packages)
-            GUIDStore().save(t, pretty=True)
+        log.debug("Writing to cache ...")
+        log.debug(f"cached_data: {len(cached_data)}")
+        log.debug(f"cached_packages: {len(cached_packages)}")
+        # Write to disk
+        GUIDStore().update(t, cached_data, cached_packages)
+        GUIDStore().save(t, pretty=True)

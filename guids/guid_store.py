@@ -146,6 +146,7 @@ class GUIDStore:
             return
 
         cached_data_filename = os.path.join(self.ts4f.data_folder, f"cached_{t.value}_data.dict")
+        # TODO split the data f(size)
         self.write_dict(cached_data_filename, data, pretty=pretty)
 
         cached_packages_filename = os.path.join(self.ts4f.data_folder, f"cached_{t.value}_filename_info.dict")

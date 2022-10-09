@@ -1,4 +1,4 @@
 {
     'additional_directories': ('s4cl', 'live_command'),
-    'include_sources': True,
+    'include_sources': False,
 }

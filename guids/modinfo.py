@@ -22,9 +22,16 @@ class ModInfo(CommonModInfo):
 
     @property
     def _version(self) -> str:
-        return '0.1.13'
+        return '0.1.16'
+
 
 '''
+v0.1.16
+    Fixed a few glitches
+v0.1.15
+    Added config.dict
+v0.1.14
+    Moved README into 'guids/'
 v0.1.13
     Initial public release
 v0.1.12
@@ -55,8 +62,7 @@ v0.1.4
 v0.1.3
     Remove deleted files from cache
 v0.1.2
-    Added mod_data/guids/cached_game_*.dict for a faster startup 
-    
+    Added mod_data/guids/cached_game_*.dict for a faster startup  
 v0.1.0
     Added GUIDStore properties
     Removed all more advanced code
@@ -71,7 +77,7 @@ v0.0.4
 v0.0.3
     Fixed a bug with TS4_GAME_FOLDER not set.
 v0.0.2
-    Removed threadding support.
+    Removed threading support.
     Start delay (first run only) about 10-120 seconds depending on the number of installed DLCs and Mods.
     Start delay after adding Mods about 1-15 seconds.
     Start delay after a game update about 10-30 sesonds

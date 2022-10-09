@@ -73,8 +73,8 @@ class DBPFParser:
                                         'colors': d.swatch_colors
                                     }
                                 })
-                        except:
-                            pass
+                        except Exception as e:
+                            log.error(f"Error '{e}'")
                     elif t == ResourceTypes.S4S_MPM:
                         name = 'S4S Merged Package Manifest'
                         id_name_dict.update({i: {'name': name}})
